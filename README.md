@@ -3,7 +3,7 @@
 no dependencies no **virtual-desktop-accessor.dll**, Windows 11 support
 
 ### Just run the examples, everything explained inside
-the most useful ones:<br>
+
 * <kbd>Numpad1</kbd> to go to `Desktop 1`<br>
 * <kbd>Numpad2</kbd> to go to `Desktop 2`<br>
 * <kbd>Numpad3</kbd> to go to `Desktop 3`<br>
@@ -35,17 +35,47 @@ numpad7::VD.MoveWindowToDesktopNum("A",1)
 numpad8::VD.MoveWindowToDesktopNum("A",2)
 numpad9::VD.MoveWindowToDesktopNum("A",3)
 ```
+...
+```autohotkey
+; move window to left and follow it
+#!left::VD.goToDesktopNum(VD.MoveWindowToRelativeDesktopNum("A", -1))
+; move window to right and follow it
+#!right::VD.goToDesktopNum(VD.MoveWindowToRelativeDesktopNum("A", 1))
+```
 
 you can remap everything
 ___
 also has:
 * `createDesktop()`
+
 * `PinWindow()`
 
 - `getCount()` ;how many virtual desktops you now have
 - pretty much everything virtual desktop, or so I think!<br>
   if there's anything missing/something you want: [create an issue](https://github.com/FuPeiJiang/VD.ahk/issues/new): I want to know what you're using it for
 
+here's quick nice example: "get desktopNum of all windows"
+```autohotkey
+#Include ..\VD.ahk
+
+foundProcesses := ""
+; Make sure to get all windows from all virtual desktops
+DetectHiddenWindows On
+WinGet, id, List
+Loop %id%
+{
+    hwnd := id%A_Index%
+    ;VD.getDesktopNumOfWindow will filter out invalid windows
+    desktopNum_ := VD.getDesktopNumOfWindow("ahk_id" hwnd)
+    If (desktopNum_ > -1) ;-1 for invalid window, 0 for "Show on all desktops", 1 for Desktop 1
+    {
+        WinGet, exe, ProcessName, % "ahk_id" hwnd
+        foundProcesses .= desktopNum_ " " exe "`n"
+    }
+}
+
+MsgBox % foundProcesses
+```
 
 <!-- Desktop2`nPress Numpad6 to move the active window to Desktop3 and go to Desktop 3 (follow the window) -->
 
